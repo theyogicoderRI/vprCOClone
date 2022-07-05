@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "761510737447",
+    "project_id": "vpr-co-project",
+    "storage_bucket": "vpr-co-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761510737447:android:7ea33c036a28244f8f0002",
+        "android_client_info": {
+          "package_name": "com.example.vpr_co"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "761510737447-41ifu3aar7ko0en0ltli6bc0ob64bdel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXyP4iKhxHEpHhQc3FzXdpg-E-W57nrwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "761510737447-41ifu3aar7ko0en0ltli6bc0ob64bdel.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "761510737447-d9idtrsqc17i6mv6er7ut9g9no29514d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vpr.co"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
