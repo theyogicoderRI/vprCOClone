@@ -10,6 +10,7 @@ import '../shared/hex_color.dart';
 import 'edit_products.dart';
 
 /// this is used for the total inventory listing
+/// also has 2 different types of search
 
 class InventoryPractice extends StatefulWidget {
   const InventoryPractice({Key? key}) : super(key: key);
