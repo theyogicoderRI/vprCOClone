@@ -46,4 +46,7 @@ app.*.map.json
 /android/app/release
 
 #claud specific
-_old.dart
+lib/screens/inventory_old2.dart
+lib/screens/inventory_old.dart
+lib/screens/inventory_practice_ORG.dart
+
