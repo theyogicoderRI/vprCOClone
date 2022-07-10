@@ -463,7 +463,20 @@ class _AddInventoryState extends State<AddInventory> {
                                                     'category': dropdownValue,
 
                                                     'expiration':
-                                                        _dateController.text,
+                                                        _dateController.text
+                                                                    .length <
+                                                                7
+                                                            ? _dateController
+                                                                    .text
+                                                                    .substring(
+                                                                        0, 5) +
+                                                                "0" +
+                                                                _dateController
+                                                                    .text
+                                                                    .substring(
+                                                                        5)
+                                                            : _dateController
+                                                                .text,
                                                     'foodContainer':
                                                         _foodContainerController
                                                             .text,

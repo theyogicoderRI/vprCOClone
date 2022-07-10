@@ -448,7 +448,7 @@ class _InventoryPracticeState extends State<InventoryPractice> {
                                       .delete();
                                 });
                                 const snackBar = SnackBar(
-                                  content: Text('Event Has Been Deleted!'),
+                                  content: Text('Item Has Been Deleted!'),
                                 );
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackBar);
