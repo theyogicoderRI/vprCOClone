@@ -18,12 +18,17 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final fieldText = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _formKeyDeleteAccount = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailReController = TextEditingController();
+  final TextEditingController _passwordReController = TextEditingController();
   //text field state variables- to store what is typed in:
   String email = '';
   String password = '';
   String error = '';
   bool loading = false;
+  String reEmail = '';
+  String rePassword = '';
 
   final AuthService _auth = AuthService();
   @override
@@ -177,6 +182,125 @@ class _SignInState extends State<SignIn> {
                       },
                       child: const Text('Submit'),
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {
+                      print(_auth.getDisplayName);
+                      print(_auth.getEmail);
+                      print(_auth.isUserLoggedIn());
+
+                      // Navigator.pushNamed(context, '/register');
+
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              insetPadding: EdgeInsets.symmetric(
+                                horizontal: 50.0,
+                                vertical: 50.0,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30.0))),
+                              elevation: 6.0,
+                              title: const Text(
+                                'Delete Your Account?',
+                                style: TextStyle(
+                                    color: Colors.black54, fontSize: 18),
+                                textAlign: TextAlign.center,
+                              ),
+                              content: Form(
+                                key: _formKeyDeleteAccount,
+                                child: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Divider(
+                                        color: Colors.grey,
+                                        height: 0.0,
+                                      ),
+                                      SizedBox(height: 8),
+                                      const Text(
+                                        'Re-enter your credentials to proceed',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(4.0),
+                                        child: TextFormField(
+                                          controller: _emailReController,
+                                          decoration: const InputDecoration(
+                                            icon: Icon(Icons.verified_user),
+                                            hintText: 'Enter Email',
+                                            labelText: 'email',
+                                            fillColor: Colors.white24,
+                                            filled: true,
+                                            // border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(4.0),
+                                        child: TextFormField(
+                                          obscureText: true,
+                                          controller: _passwordReController,
+                                          decoration: const InputDecoration(
+                                            icon: Icon(Icons.password),
+                                            hintText: 'Enter Password',
+                                            labelText: 'password',
+                                            fillColor: Colors.white24,
+                                            filled: true,
+                                            // border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 6.0),
+                                      Icon(
+                                        Icons.crisis_alert,
+                                        color: Colors.red,
+                                        size: 40.0,
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Center(
+                                        child: Text(
+                                          'Your account will be permanently deleted',
+                                          style:
+                                              TextStyle(color: Colors.black87),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Yes, Delete'),
+                                  onPressed: () {
+                                    setState(() {
+                                      reEmail = _emailReController.text;
+                                      rePassword = _passwordReController.text;
+                                      _auth.deleteUser(reEmail, rePassword);
+                                    });
+
+                                    Navigator.of(context).pop();
+
+                                    const snackBar = SnackBar(
+                                      content: Text('Account Is Deleted'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    child: const Text("Delete Account",
+                        style: TextStyle(
+                            fontSize: 14, fontStyle: FontStyle.normal)),
                   ),
                   const SizedBox(height: 1),
                   Text(

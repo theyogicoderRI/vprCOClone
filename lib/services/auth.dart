@@ -105,6 +105,26 @@ class AuthService {
     }
   }
 
+  Future deleteUser(String email, String password) async {
+    try {
+      // Create a credential
+      AuthCredential credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      await FirebaseAuth.instance.currentUser!
+          .reauthenticateWithCredential(credential);
+      User? user = _auth.currentUser;
+      print(user);
+      if (user != null) {
+        return user.delete();
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future resetPassword(String emailAddress) async {
     final list = await _auth.fetchSignInMethodsForEmail(emailAddress);
     try {

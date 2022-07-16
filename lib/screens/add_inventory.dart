@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:vpr_co/services/colors.dart' as AppColors;
 import 'package:google_fonts/google_fonts.dart';
@@ -142,7 +143,7 @@ class _AddInventoryState extends State<AddInventory> {
                   size: 45.0,
                 ),
                 Text(
-                    'CATEGORY is Empty. Please Select a Category From the Drop Down',
+                    'Either CATEGORY is Empty. Or your expiration date format is incorrect. Please make changes',
                     style: TextStyle(color: Colors.black87)),
               ],
             ),
@@ -338,6 +339,7 @@ class _AddInventoryState extends State<AddInventory> {
                                     Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: TextFormField(
+                                        maxLength: 7,
                                         controller: _dateController,
                                         decoration: const InputDecoration(
                                           icon: Icon(Icons.date_range),
@@ -345,8 +347,17 @@ class _AddInventoryState extends State<AddInventory> {
                                           labelText: 'Expiration Date',
                                           fillColor: Colors.white24,
                                           filled: true,
+
                                           // border: OutlineInputBorder(),
                                         ),
+                                        validator: (value) {
+                                          RegExp regExp =
+                                              RegExp(r'\b\d{4}-\b\d{2}');
+                                          if (!regExp.hasMatch(value!)) {
+                                            return "expiration date: '2022-04'";
+                                          }
+                                          return null;
+                                        },
                                       ),
                                     ),
                                     Padding(
@@ -438,7 +449,9 @@ class _AddInventoryState extends State<AddInventory> {
                                         ),
                                         child: Text("Submit"),
                                         onPressed: () {
-                                          if (dropdownValue != null) {
+                                          if (dropdownValue != null &&
+                                              _formKey.currentState!
+                                                  .validate()) {
                                             CollectionReference _inventory =
                                                 FirebaseFirestore.instance
                                                     .collection('inventory');
@@ -456,8 +469,9 @@ class _AddInventoryState extends State<AddInventory> {
                                               _inventory
                                                   .add({
                                                     'pid': i = i + 1,
-                                                    'barcode':
-                                                        codeString, // John Doe
+                                                    'barcode': codeString == ''
+                                                        ? "000000"
+                                                        : codeString, // John Doe
                                                     'brand':
                                                         _brandController.text,
                                                     'category': dropdownValue,
@@ -576,6 +590,48 @@ class _ProductListingState extends State<ProductListing> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _dateController = TextEditingController()
     ..text = "2022-05";
+
+  Future<void> launchAlert() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40.0))),
+          elevation: 8.0,
+          title: const Text('Oops, There\'s an Error!',
+              style: TextStyle(color: Colors.black54)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Divider(
+                  color: Colors.grey,
+                  height: 0.0,
+                ),
+                SizedBox(height: 4.0),
+                Icon(
+                  Icons.crisis_alert,
+                  color: Colors.red,
+                  size: 45.0,
+                ),
+                Text('Expiration date format is incorrect. Please make changes',
+                    style: TextStyle(color: Colors.black87)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -750,6 +806,17 @@ class _ProductListingState extends State<ProductListing> {
                                                                           TextFormField(
                                                                         controller:
                                                                             _dateController,
+                                                                        validator:
+                                                                            (value) {
+                                                                          RegExp
+                                                                              regExp =
+                                                                              RegExp(r'\b\d{4}-\b\d{2}');
+                                                                          if (!regExp
+                                                                              .hasMatch(value!)) {
+                                                                            return "date: '2022-04'";
+                                                                          }
+                                                                          return null;
+                                                                        },
                                                                       ),
                                                                     ),
                                                                     Padding(
@@ -760,27 +827,34 @@ class _ProductListingState extends State<ProductListing> {
                                                                           child: Text(
                                                                             "Submit",
                                                                           ),
+
+                                                                          // _formKey.currentState!
+                                                                          //     .validate()
                                                                           onPressed: () {
-                                                                            CollectionReference
-                                                                                _inventory =
-                                                                                FirebaseFirestore.instance.collection('inventory');
-                                                                            _inventory
-                                                                                .add({
-                                                                                  'barcode': inventorySnapshot['barcode'], // John Doe
-                                                                                  'brand': inventorySnapshot['brand'],
-                                                                                  'category': inventorySnapshot['category'],
-                                                                                  'expiration': _dateController.text,
-                                                                                  'foodContainer': inventorySnapshot['foodContainer'],
-                                                                                  'foodType': inventorySnapshot['foodType'],
-                                                                                  'name': inventorySnapshot['name'],
-                                                                                  'size': inventorySnapshot['size'],
-                                                                                  'storage': inventorySnapshot['storage'],
-                                                                                  'mark': false,
-                                                                                  'markedColor': '#D0D6D0',
-                                                                                })
-                                                                                .then((value) => print("Item Copied!"))
-                                                                                .catchError((error) => print("Failed to add item: $error"));
-                                                                            Navigator.pop(context);
+                                                                            if (_formKey.currentState!.validate()) {
+                                                                              CollectionReference _inventory = FirebaseFirestore.instance.collection('inventory');
+                                                                              _inventory
+                                                                                  .add({
+                                                                                    'barcode': inventorySnapshot['barcode'] == '' ? '000000' : inventorySnapshot['barcode'], // John Doe
+                                                                                    'brand': inventorySnapshot['brand'],
+                                                                                    'category': inventorySnapshot['category'],
+                                                                                    'expiration': _dateController.text == '' || _dateController.text.length < 7 || _dateController.text == '000000' || _dateController.text == '0000000' || _dateController.text == '00000000' ? '2022-04' : _dateController.text,
+                                                                                    'foodContainer': inventorySnapshot['foodContainer'],
+                                                                                    'foodType': inventorySnapshot['foodType'],
+                                                                                    'name': inventorySnapshot['name'],
+                                                                                    'size': inventorySnapshot['size'],
+                                                                                    'storage': inventorySnapshot['storage'],
+                                                                                    'mark': false,
+                                                                                    'markedColor': '#D0D6D0',
+                                                                                  })
+                                                                                  .then((value) => print("Item Copied!"))
+                                                                                  .catchError((error) => print("Failed to add item: $error"));
+                                                                              Navigator.pop(context);
+                                                                            } else {
+                                                                              setState(() {
+                                                                                launchAlert();
+                                                                              });
+                                                                            }
                                                                           },
                                                                           style: ElevatedButton.styleFrom(primary: AppColors.appPurple)),
                                                                     )
