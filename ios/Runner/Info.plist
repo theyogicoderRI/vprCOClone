@@ -32,9 +32,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Please grant camera access</string>
+	<string>Camera access is used for User Profile and Facility photo selection and upload to the app</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please grant photo gallery access</string>
+	<string>Photo gallery access is used for User Profile and Facility photo selection and upload to the app</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
